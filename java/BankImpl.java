@@ -13,14 +13,25 @@ public class BankImpl implements BankInterface {
      * Creates a new bank with the specified resources.
      */
     public BankImpl(int numberOfCustomers, int[] resources) {
-
-        // TODO:
+ 
+        // TODO: COMPLETED
         // Initialize numberOfCustomers and numberOfResources.
+        this.numberOfCustomers = numberOfCustomers;
+        this.numberOfResources = resources.length;
 
-        // TODO:
+        // TODO: COMPLETED
         // Initialize available, maximum,
         // allocation, and need.
-    }
+        available = new int[numberOfResources];
+        for (int j = 0; j < numberOfResources; j++) {
+            available[j] = resources[j];
+        }
+
+        // initialize int arrays to 0, so allocation starts empty
+        maximum = new int[numberOfCustomers][numberOfResources];
+        allocation = new int[numberOfCustomers][numberOfResources];
+        need = new int[numberOfCustomers][numberOfResources];
+     }
 
     /**
      * Adds a customer and records the customer's
@@ -28,8 +39,30 @@ public class BankImpl implements BankInterface {
      */
     @Override
     public void addCustomer(int customerNum, int[] maxDemand) {
+            //TODO: COMPLETED
 
-        // TODO
+        if (customerNum < 0 || customerNum >= numberOfCustomers) {
+            System.out.println("Error: invalid customer number " + customerNum);
+            return;
+        }
+        if (maxDemand == null || maxDemand.length != numberOfResources) {
+            System.out.println("Error: customer " + customerNum
+                    + " must have " + numberOfResources + " resource values");
+            return;
+        }
+
+        for (int j = 0; j < numberOfResources; j++) {
+            if (maxDemand[j] < 0) {
+                System.out.println("Error: negative maximum for customer " + customerNum);
+                return;
+            }
+        }
+
+        for (int j = 0; j < numberOfResources; j++) {
+            maximum[customerNum][j] = maxDemand[j];
+            allocation[customerNum][j] = 0;
+            need[customerNum][j] = maxDemand[j];   // Need = Max - Allocation (0)
+        }
     }
 
     /**
@@ -40,11 +73,39 @@ public class BankImpl implements BankInterface {
      * Allocation
      * Need
      */
+
     @Override
     public void getState() {
 
-        // TODO
+        // TODO: COMPLETED
+
+        System.out.println("Available:");
+        System.out.println(formatRow(available));
+        System.out.println();
+
+        printMatrix("Maximum", maximum);
+        printMatrix("Allocation", allocation);
+        printMatrix("Need", need);
     }
+
+    /** Prints labeled matrix (one customer per line) */
+    private void printMatrix(String label, int[][] matrix) {
+        System.out.println(label + ":");
+        for (int i = 0; i < numberOfCustomers; i++) {
+            System.out.println("Customer " + i + ": " + formatRow(matrix[i]));
+        }
+        System.out.println();
+    }
+
+    /** Formats a row [10 5 7 8]. */
+    private String formatRow(int[] row) {
+       StringBuilder sb = new StringBuilder("[");
+        for (int j = 0; j < row.length; j++) {
+            if (j > 0) sb.append(' ');
+            sb.append(row[j]);
+        }
+        return sb.append(']').toString();
+}
 
     /**
      * Determines whether the system would remain
