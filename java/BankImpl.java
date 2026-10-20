@@ -116,8 +116,65 @@ public class BankImpl implements BankInterface {
         // TODO:
         // Implement the Banker's Safety Algorithm.
 
-        return false;
+    // Copy the state so the real bank is NEVER changed
+    int[] work = new int[numberOfResources];
+    int[][] tempAllocation = new int[numberOfCustomers][numberOfResources];
+    int[][] tempNeed = new int[numberOfCustomers][numberOfResources];
+
+    for (int j = 0; j < numberOfResources; j++) {
+        work[j] = available[j];
     }
+    for (int i = 0; i < numberOfCustomers; i++) {
+        for (int j = 0; j < numberOfResources; j++) {
+            tempAllocation[i][j] = allocation[i][j];
+            tempNeed[i][j] = need[i][j];
+        }
+    }
+
+    // Pretend request was granted
+    for (int j = 0; j < numberOfResources; j++) {
+        work[j] -= request[j];
+        tempAllocation[customerNum][j] += request[j];
+        tempNeed[customerNum][j] -= request[j];
+    }
+
+    // No customer has finished (yet)
+    boolean[] finish = new boolean[numberOfCustomers];
+    int finishedCount = 0;
+
+    // Keep finding a customer whose Need <= Work,
+    // let it finish, before taking back resources
+    boolean foundOne = true;
+    while (foundOne) {
+        foundOne = false;
+
+        for (int i = 0; i < numberOfCustomers; i++) {
+            if (finish[i]) {
+                continue;
+            }
+
+            boolean canFinish = true;
+            for (int j = 0; j < numberOfResources; j++) {
+                if (tempNeed[i][j] > work[j]) {
+                    canFinish = false;
+                    break;
+                }
+            }
+
+            if (canFinish) {
+                for (int j = 0; j < numberOfResources; j++) {
+                    work[j] += tempAllocation[i][j];
+                }
+                finish[i] = true;
+                finishedCount++;
+                foundOne = true;
+            }
+        }
+    }
+
+    // Safe only if every customer finishes
+    return finishedCount == numberOfCustomers;
+}
 
     /**
      * Attempts to allocate resources to a customer.

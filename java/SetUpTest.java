@@ -5,7 +5,7 @@
  * Compile (in bash):  javac BankInterface.java BankImpl.java SetUpTest.java
  * Run:      java SetUpTest
  *
- * THIS IS A THROWAWAY TEST FILE, UNTIL SOMEONE FINISHED THE TODOs IN TestBankers.java.
+ * THIS IS A THROWAWAY TEST FILE, UNTIL SOMEONE FINISHED THE TODOs IN TestBankers.java
  */
 public class SetUpTest {
 
