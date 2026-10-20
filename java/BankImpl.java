@@ -113,7 +113,7 @@ public class BankImpl implements BankInterface {
      */
     private boolean isSafeState(int customerNum, int[] request) {
 
-        // TODO:
+        // TODO: COMLPLETED
         // Implement the Banker's Safety Algorithm.
 
     // Copy the state so the real bank is NEVER changed
