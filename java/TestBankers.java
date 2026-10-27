@@ -24,26 +24,37 @@ public class TestBankers {
             );
             System.exit(1);
         }
+        //TODO: COMPLETED
+        // 1. Read the input filename.
+        String inputFile = args[0];
+        
+        // 2. Determine the number of resource types.
+        int numberOfResources = args.length - 1;
+        
+        // 3. Read the initial resources from the command-line arguments.
+        int [] resources = new int[numberOfResources];
+        for (int j = 0; j < numberOfResources; j++){
+            resources[j] = readNumber(args[j + 1]);
+            if (resources[j] < 0){
+                System.err.println("Error: Invalid entry resource values must be 0 or more, \"" + args[j + 1] + "\" is not valid.");
+                System.exit(1);
+            } 
+        }
+         
+         // 4. Create the BankImpl object.
+         BankInterface bank = new BankImpl(NUMBER_OF_CUSTOMERS, resources);
+        
+         // 5. Open the input file.
+         BufferedReader reader = openInputFile(inputFile);
 
-        /*
-         * TODO:
-         *
-         * 1. Read the input filename.
-         *
-         * 2. Determine the number of resource types.
-         *
-         * 3. Read the initial resources from
-         *    the command-line arguments.
-         *
-         * 4. Create the BankImpl object.
-         *
-         * 5. Open the input file.
-         *
-         * 6. Read the maximum demand for each customer.
-         *
-         * 7. Call addCustomer() for each customer.
-         */
+        // 6. Read the maximum demand for each customer.
+        int[][] maxDemand = readMaxDemand(reader, inputFile, numberOfResources);
 
+        // 7. Call addCustomer() for each customer.
+        for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
+            bank.addCustomer(i, maxDemand[i]);
+        }
+        
 
         /*
          * TODO:
