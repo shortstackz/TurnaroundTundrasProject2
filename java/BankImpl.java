@@ -113,7 +113,7 @@ public class BankImpl implements BankInterface {
      */
     private boolean isSafeState(int customerNum, int[] request) {
 
-        // TODO: COMLPLETED
+        // TODO: COMPLETED
         // Implement the Banker's Safety Algorithm.
 
     // Copy the state so the real bank is NEVER changed
@@ -186,14 +186,48 @@ public class BankImpl implements BankInterface {
     public synchronized boolean requestResources(
             int customerNum, int[] request) {
 
-        // TODO:
+        // TODO: COMPLETED
         // 1. Validate the request.
-        // 2. Check whether the request exceeds Need.
-        // 3. Check whether the resources are available.
-        // 4. Check whether the resulting state is safe.
-        // 5. Update the bank if the request is approved.
+        if (customerNum < 0 || customerNum >= numberOfCustomers) {
+            return false;
+        }
+        if (request == null || request.length != numberOfResources) {
+            return false;
+        }
 
-        return false;
+        for (int i = 0; i < numberOfResources; i++) {
+            if (request[i] < 0) {
+                return false;
+            }
+        }
+        
+        // 2. Check whether the request exceeds Need.
+        for (int i = 0; i < numberOfResources; i++) {
+            if (request[i] > need[customerNum][i]) {
+                return false;
+            }
+        }
+        
+        // 3. Check whether the resources are available.
+        for (int i = 0; i < numberOfResources; i++) {
+            if (request[i] > available[i]) {
+                return false;
+            }
+        }
+        
+        // 4. Check whether the resulting state is safe.
+        if (!isSafeState(customerNum, request)) {
+            return false;
+        }
+        
+        // 5. Update the bank if the request is approved.
+        for (int i = 0; i < numberOfResources; i++) {
+            available[i] -= request[i];
+            allocation[customerNum][i] += request[i];
+            need[customerNum][i] -= request[i];
+        }
+        
+        return true;
     }
 
     /**
@@ -203,7 +237,37 @@ public class BankImpl implements BankInterface {
     public synchronized void releaseResources(
             int customerNum, int[] release) {
 
-        // TODO:
+        // TODO: COMPLETED
         // Validate and release the resources.
+        if (customerNum < 0 || customerNum >= numberOfCustomers) {
+            System.out.println("Error: Invalid customer number");
+            return;
+        }
+
+        if (release == null || release.length != numberOfResources) {
+            System.out.println("Error: Incorrect number of resources");
+            return;
+        }
+
+        for (int i = 0; i < numberOfResources; i++) {
+            if (release[i] < 0) {
+                System.out.println("Error: Cannot release a negative value");
+                return;
+            }
+        }
+
+        for (int i = 0; i < numberOfResources; i++) {
+            if (release[i] > allocation[customerNum][i]) {
+                System.out.println("Error: Cannot release more resources than allocated");
+                return;
+            }
+        }
+      
+        // Releasing the resources if successful
+        for (int i = 0; i < numberOfResources; i++) {
+            available[i] += release[i];
+            allocation[customerNum][i] -= release[i];
+            need[customerNum][i] += release[i];
+        }
     }
 }
