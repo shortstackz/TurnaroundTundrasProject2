@@ -96,10 +96,10 @@ public class TestBankers {
                     // Call requestResources()
                     if(command.equals("RQ")){
                         if(bank.requestResources(customerNumber, values)){
-                            System.out.println("Approved!");
+                            System.out.println("Approved");
                         }
                         else {
-                            System.out.println("Denied!");
+                            System.out.println("Denied");
                         }
                     }
                     // RL:
